@@ -1,29 +1,40 @@
 class Dot {
-   float x_pos;
-   float y_pos;
+  PVector position;
+  PVector velocity;
+  PVector acceleration;
+  
+  Brain brain;
+  
+  boolean isDead = false;
    
   Dot() {
-   x_pos = 400;
-   y_pos = 800;
+    brain = new Brain(500);
+    position = new PVector(100, 700);
+    velocity = new PVector(0, 0);
+    acceleration = new PVector(0, 0);
   }
   
   void Show() {
-
-  float rand_x = random(-20, 20);
-  float rand_y = random(-20, 20);
-  
-  if((x_pos + rand_x + 10) > width || (x_pos + rand_x - 10) < 0){
-     rand_x *= -1; 
+    if(isDead){
+      fill(255,0,0);
+      ellipse(position.x, position.y, 10, 10);
+      return;
+    }
+    fill(0);
+    ellipse(position.x, position.y, 10, 10);
   }
- 
- if((y_pos + rand_y + 10) > height || (y_pos + rand_y - 10) < 0) {
-    rand_y *= -1; 
- }
   
-  fill(0);
-  x_pos += rand_x;
-  y_pos += rand_y;
-  ellipse(x_pos, y_pos, 10, 10);
+  void Move() {
+   if (brain.directions.length > brain.step) {//if there are still directions left then set the acceleration as the next PVector in the direcitons array
+      acceleration = brain.directions[brain.step];
+      brain.step++;
+    } else {//if at the end of the directions array then the dot is dead
+      isDead = true;
+    }
+   
+   velocity.add(acceleration);
+   velocity.limit(5);
+   position.add(velocity);
   }
   
 }
