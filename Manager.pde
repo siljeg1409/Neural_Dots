@@ -23,9 +23,9 @@ class Manager {
   
   void generateObstacles() {
     obstacles.add(new Obstacle(0, 100, 300, 10));
-    obstacles.add(new Obstacle(300, 100, 10, 200));
+    //obstacles.add(new Obstacle(300, 100, 10, 200));
     obstacles.add(new Obstacle(200, 400, 600, 10));
-    obstacles.add(new Obstacle(200, 200, 10, 200));
+    //obstacles.add(new Obstacle(200, 200, 10, 200));
     obstacles.add(new Obstacle(0, 600, 400, 10));
     //obstacles.add(new Obstacle(50, 200, 150, 10));
     //obstacles.add(new Obstacle(0, 50, 10, 100));
@@ -62,7 +62,7 @@ class Manager {
           dots[i].Move();
           allDead = false;
         }
-        else if (dots[i].isDead && !dots[i].isCalculated)
+        else if ((dots[i].isDead || dots[i].isReachedGoal) && !dots[i].isCalculated)
         {
           dots[i].isCalculated = true;
           float dotFitness = dots[i].CalculateFitness();
@@ -102,14 +102,17 @@ class Manager {
   
   Dot[] nextGeneration() {
     Dot[] newGenDots = new Dot[dots.length]; 
+    Dot parent = dots[bestDotIndex];
     
     newGenDots[0] = new Dot();
-    newGenDots[0].brain = dots[bestDotIndex].brain.Clone();
+    newGenDots[0].brain = parent.brain.Clone();
     newGenDots[0].isBestDot = true;
+    newGenDots[0].dotRadius = 10;
     
     for (int i = 1; i< newGenDots.length; i++) {
       //select parent based on fitness
-      Dot parent = selectParent();
+      //Dot parent = selectParent();
+      
       Dot baby = new Dot();
       if(parent != null)
         baby.brain = parent.brain.Clone();
