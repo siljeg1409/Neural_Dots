@@ -11,6 +11,7 @@ class Brain {
   // test git acc
   // win credentials
   // still no result
+  // username set
   
     void randomize() {
     for (int i = 0; i< directions.length; i++) {
