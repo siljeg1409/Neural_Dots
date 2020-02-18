@@ -6,22 +6,33 @@ class Dot {
   Brain brain;
   
   boolean isDead = false;
-   
+  boolean isReachedGoal = false;
+  boolean isCalculated = false;
+  
+  float fitness = 0;
+  float dotRadius = 5;
+  
   Dot() {
     brain = new Brain(500);
     position = new PVector(100, 700);
     velocity = new PVector(0, 0);
     acceleration = new PVector(0, 0);
   }
-  
+
+//---------------------------------------------------------------------------------------------------
   void Show() {
+    
+    //change colors of dot if dead, reached goal, best, or traveling
     if(isDead){
-      fill(255,0,0);
-      ellipse(position.x, position.y, 10, 10);
-      return;
+      fill(255, 0, 0);
+    } else if (isReachedGoal) {
+      fill(0, 0, 255);
+    } else {
+      fill(0);
     }
-    fill(0);
-    ellipse(position.x, position.y, 10, 10);
+    
+    //draw dot
+    ellipse(position.x, position.y, dotRadius, dotRadius);
   }
   
   void Move() {
@@ -36,5 +47,23 @@ class Dot {
    velocity.limit(5);
    position.add(velocity);
   }
+//---------------------------------------------------------------------------------------------------
+
+  float CalculateFitness() {
+    
+    if(isReachedGoal) {
+      fitness = 1.0 / (float)(brain.step * brain.step);
+      //print("fitness 1 calculated: " + fitness);
+    }
+    else {
+      float distanceToGoal = dist(position.x, position.y, goal.x, goal.y);
+      fitness = 1.0 / (distanceToGoal * distanceToGoal);
+      //print("fitness 2 calculated: " + fitness);
+    }
+    
+    return fitness;
+    
+  }
   
+//---------------------------------------------------------------------------------------------------
 }
