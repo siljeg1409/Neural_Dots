@@ -12,6 +12,7 @@ class Brain {
   // win credentials
   // still no result
   // username set
+  // email set
   
     void randomize() {
     for (int i = 0; i< directions.length; i++) {
