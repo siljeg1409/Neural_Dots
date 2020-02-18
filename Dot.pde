@@ -8,6 +8,7 @@ class Dot {
   boolean isDead = false;
   boolean isReachedGoal = false;
   boolean isCalculated = false;
+  boolean isBestDot = false;
   
   float fitness = 0;
   float dotRadius = 5;
@@ -23,11 +24,20 @@ class Dot {
   void Show() {
     
     //change colors of dot if dead, reached goal, best, or traveling
-    if(isDead){
+    if(isDead)
+    {
       fill(255, 0, 0);
-    } else if (isReachedGoal) {
+    } 
+    else if (isReachedGoal) 
+    {
       fill(0, 0, 255);
-    } else {
+    } 
+    else if (isBestDot) 
+    {
+      fill(0, 255, 0);
+    } 
+    else 
+    {
       fill(0);
     }
     

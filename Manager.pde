@@ -4,6 +4,8 @@ class Manager {
   ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
   boolean allDead = true;
   float sumFitness = 0;
+  float bestDotFitness = 0;
+  int bestDotIndex = 0;
   int generationCount = 1;
   
   Manager(int size) {
@@ -41,7 +43,7 @@ class Manager {
     
     if(allDead){
       print("\nGENERATION: " + generationCount);
-      nextGeneration();
+      dots = nextGeneration();
     }
   }
   
@@ -53,20 +55,28 @@ class Manager {
 
   void showDots() {
     allDead = true;
-      for (Dot d : dots){
-        checkDotPosition(d);
-        if(!d.isDead){
-          d.Move();
+    for (int i = 0; i < dots.length; i++) {
+      checkDotPosition(dots[i]);
+        if(!dots[i].isDead) 
+        {
+          dots[i].Move();
           allDead = false;
         }
-        else if (d.isDead && !d.isCalculated){
-          d.isCalculated = true;
-          sumFitness += d.CalculateFitness();
+        else if (dots[i].isDead && !dots[i].isCalculated)
+        {
+          dots[i].isCalculated = true;
+          float dotFitness = dots[i].CalculateFitness();
+          sumFitness += dotFitness;
+          if(bestDotFitness < dotFitness)
+          {
+            bestDotFitness = dotFitness;
+            bestDotIndex = i;
+          }
         }
-          
-          
-        d.Show();
+
+        dots[i].Show();
     }
+    
   }
 
   void showGoal() {
@@ -90,9 +100,14 @@ class Manager {
   
   
   
-  void nextGeneration() {
-    Dot[] newGenDots = new Dot[dots.length];    
-    for (int i = 0; i< newGenDots.length; i++) {
+  Dot[] nextGeneration() {
+    Dot[] newGenDots = new Dot[dots.length]; 
+    
+    newGenDots[0] = new Dot();
+    newGenDots[0].brain = dots[bestDotIndex].brain.Clone();
+    newGenDots[0].isBestDot = true;
+    
+    for (int i = 1; i< newGenDots.length; i++) {
       //select parent based on fitness
       Dot parent = selectParent();
       Dot baby = new Dot();
@@ -101,23 +116,19 @@ class Manager {
       //get baby from them
       newGenDots[i] = baby;
     }
-    dots = newGenDots;
-    generationCount++;
-    allDead = false;
-    sumFitness = 0;
+    resetProperties();
+    return newGenDots;
+    
   }
   
   
   Dot selectParent() {
-    float rand = random(sumFitness);
+    float rand = random((sumFitness / 2), sumFitness);
     float runningSum = 0;
-   // print(" RAND: " + rand);
     
     for (int i = 0; i < dots.length; i++) {
       runningSum+= dots[i].fitness;
-       //print(" FITNESS: " + dots[i].fitness);
       if (runningSum  > rand) {
-        //print("\nRETURNawdawdadawdaw\n");
         return dots[i];
       }
     }
@@ -125,5 +136,14 @@ class Manager {
     return null;
   }
   
+  
+  void resetProperties()
+  {
+    generationCount++;
+    allDead = false;
+    sumFitness = 0;
+    bestDotFitness = 0;
+    bestDotIndex = 0; 
+  }
   
 }
